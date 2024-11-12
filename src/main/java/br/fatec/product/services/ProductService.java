@@ -20,10 +20,36 @@ public class ProductService {
         
      }
 
-     public Product getProductById(long id){
+     public Product getProductById(Long id){
         return repository.findById(id).orElseThrow(
              () -> new EntityNotFoundException("Produto não Cadastrado")
         );
      }
 
+     public void delete(Long id){
+      if(repository.existsById(id)){
+         repository.deleteById(id);
+
+      }
+      else {
+         throw new EntityNotFoundException("Produto não Cadastrado");
+      }
+     }
+
+     public Product save(Product product){
+        return repository.save(product);
+     }
+
+     public void update(Product product, Long id){
+        Product aux = repository.getReferenceById(id);
+
+        aux.setCategory(product.getCategory());  
+        aux.setName(product.getName());
+        aux.setPrice(product.getPrice());
+
+        repository.save(aux);
+     }
+
 }
+
+
