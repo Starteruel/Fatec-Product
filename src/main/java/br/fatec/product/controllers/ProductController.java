@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.fatec.product.entities.Product;
+import br.fatec.product.dtos.ProductRequest;
+import br.fatec.product.dtos.ProductResponse;
 import br.fatec.product.services.ProductService;
 
 @RestController
@@ -24,12 +26,12 @@ public class ProductController {
     private ProductService service;
 
     @GetMapping
-    public ResponseEntity<List<Product>> getProducts(){
+    public ResponseEntity<List<ProductResponse>> getProducts(){
         return ResponseEntity.ok(service.getAllProducts());
     }
 
     @GetMapping ("{id}")
-    public ResponseEntity<Product> geProduct(@PathVariable Long id){
+    public ResponseEntity<ProductResponse> getProduct(@PathVariable Long id){
         return ResponseEntity.ok(service.getProductById(id));
 
     }
@@ -42,13 +44,13 @@ public class ProductController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Void> updateProduct(@PathVariable Long id, @RequestBody Product product){
+    public ResponseEntity<Void> updateProduct(@PathVariable Long id, @Validated @RequestBody ProductRequest product){
         service.update(product, id);
         return ResponseEntity.ok().build();
     }
     @PostMapping()
-    public ResponseEntity<Product> saveProduct(@RequestBody Product product){
-        Product newProduct = service.save(product);
+    public ResponseEntity<ProductResponse> saveProduct(@Validated @RequestBody ProductRequest product){
+        ProductResponse newProduct = service.save(product);
         return ResponseEntity.created(null).body(newProduct);
     }
     
